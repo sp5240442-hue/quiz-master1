@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}My Performance{% endblock %}
+{% block heading %}My Performance{% endblock %}
+{% block content %}
+<div class="perf-head">
+  <h2>&#128202; My Performance</h2>
+  <a class="perf-user" href="{{ url_for('pages.profile') }}" title="Open your profile">@{{ current_user.username }}</a>
+</div>
+
+<div class="grid grid-5">
+  <div class="stat stat-card"><span class="stat-label">&#127918; Games Saved</span><strong>{{ "{:,}".format(data.overall.games) }}</strong></div>
+  <div class="stat stat-card"><span class="stat-label">&#127942; Total Score</span><strong>{{ "{:,}".format(data.overall.score) }}</strong></div>
+  <div class="stat stat-card"><span class="stat-label">&#11088; Best Game</span><strong>{{ data.overall.best_game }}</strong></div>
+  <div class="stat stat-card"><span class="stat-label">&#9201;&#65039; Best Time</span><strong>{{ data.overall.best_time|human_duration }}</strong></div>
+  <div class="stat stat-card"><span class="stat-label">&#127919; Accuracy</span><strong>{{ "%.1f"|format(data.overall.accuracy) }}%</strong></div>
+</div>
+<p class="muted small">Combined from your saved Category Quiz, All Quiz and Daily Quiz games. Best Time is your fastest single game.</p>
+
+<h3 class="section-title">&#128203; By Quiz Type</h3>
+<div class="table-wrap"><table class="table perf-table">
+  <thead><tr><th>Quiz Type</th><th class="num">Games</th><th class="num">Answered</th><th class="num">Correct</th><th class="num">Wrong</th><th class="num">Accuracy</th><th class="num">Score</th><th class="num">Time</th></tr></thead>
+  <tbody>{% for b in data.by_type %}
+    <tr><td data-label="Quiz Type">{{ b.label }}</td><td data-label="Games" class="num">{{ b.games }}</td><td data-label="Answered" class="num">{{ b.answered }}</td>
+        <td data-label="Correct" class="num">{{ b.correct }}</td><td data-label="Wrong" class="num">{{ b.wrong }}</td>
+        <td data-label="Accuracy" class="num">{{ "%.1f"|format(b.accuracy) }}%</td><td data-label="Score" class="num">{{ b.score }}</td>
+        <td data-label="Time" class="num">{{ b.time|human_duration }}</td></tr>
+  {% endfor %}</tbody>
+</table></div>
+
+<h3 class="section-title">&#128200; Last 10 Game Scores</h3>
+<div class="seg" role="group" aria-label="Chart type">
+  <button type="button" class="seg-btn" data-chart="bar" aria-pressed="false">Bar Chart</button>
+  <button type="button" class="seg-btn" data-chart="pie" aria-pressed="false">Pie Chart</button>
+</div>
+<p class="muted small" id="chartHint">Select a chart type to see your last 10 game scores.</p>
+<div class="card chart-card" id="chartArea" hidden aria-live="polite"></div>
+<script type="application/json" id="perfChartData">{{ data.chart|tojson }}</script>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/performance.js') }}" defer></script>{% endblock %}

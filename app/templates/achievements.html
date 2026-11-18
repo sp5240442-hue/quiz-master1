@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Achievements &amp; Badges{% endblock %}
+{% block heading %}Achievements &amp; Badges{% endblock %}
+{% block content %}
+<div class="grid badge-grid">
+  {% for b in badges %}
+  <article class="card badge {{ 'earned' if b.status == 'Earned' else 'locked' }}">
+    <h3>{{ b.name }}</h3>
+    <p>{{ b.description }}</p>
+    <p class="ach-status"><strong>{{ b.status }}</strong></p>
+  </article>
+  {% endfor %}
+</div>
+{% endblock %}
